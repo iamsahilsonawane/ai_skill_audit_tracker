@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMentorContext } from '@/contexts/MentorContext';
 import { useSkills, useSkillAssessments, useLearningPlan } from '@/hooks/useProfile';
-import { SKILL_CATEGORIES, SKILL_LEVEL_LABELS, SKILL_LEVEL_COLORS, SkillLevel } from '@/lib/supabase-utils';
+import { SKILL_CATEGORIES, SKILL_LEVEL_LABELS, SKILL_LEVEL_COLORS, SkillLevel, LEARNING_PLAN_WEEKS } from '@/lib/supabase-utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 export default function SkillMap() {
+  const [viewMode, setViewMode] = useState<'category' | 'weekly'>('category');
   const { profile } = useAuth();
   const { viewingProfileId } = useMentorContext();
   const { data: skills } = useSkills();
@@ -36,6 +37,22 @@ export default function SkillMap() {
           <h1 className="text-2xl font-bold">Skill Map</h1>
           <p className="text-sm text-muted-foreground mt-1">43 skills across 5 categories</p>
         </div>
+        <div className="flex gap-2">
+          <Button
+            variant={viewMode === 'category' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setViewMode('category')}
+          >
+            Category View
+          </Button>
+          <Button
+            variant={viewMode === 'weekly' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setViewMode('weekly')}
+          >
+            Weekly View
+          </Button>
+        </div>
       </div>
 
       {/* Heat Map Legend */}
@@ -49,39 +66,79 @@ export default function SkillMap() {
         ))}
       </div>
 
-      {/* Skills by Category */}
-      {SKILL_CATEGORIES.map(category => {
-        const categorySkills = skills?.filter(s => s.category === category) || [];
-        return (
-          <Card key={category} className="shadow-card">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base flex items-center gap-2">
-                {category}
-                <Badge variant="secondary" className="font-mono text-xs">
-                  {categorySkills.length}
-                </Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-2">
-                {categorySkills.map(skill => {
-                  const level = getLevel(skill.id);
-                  return (
-                    <SkillRow
-                      key={skill.id}
-                      skill={skill}
-                      level={level}
-                      currentWeek={currentWeek}
-                      profileId={profile?.id || ''}
-                      isMentor={isMentor}
-                    />
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        );
-      })}
+      {/* Skills by Category or Week */}
+      {viewMode === 'category' ? (
+        <>
+          {SKILL_CATEGORIES.map(category => {
+            const categorySkills = skills?.filter(s => s.category === category) || [];
+            return (
+              <Card key={category} className="shadow-card">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    {category}
+                    <Badge variant="secondary" className="font-mono text-xs">
+                      {categorySkills.length}
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-2">
+                    {categorySkills.map(skill => {
+                      const level = getLevel(skill.id);
+                      return (
+                        <SkillRow
+                          key={skill.id}
+                          skill={skill}
+                          level={level}
+                          currentWeek={currentWeek}
+                          profileId={profile?.id || ''}
+                          isMentor={isMentor}
+                        />
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </>
+      ) : (
+        <>
+          {LEARNING_PLAN_WEEKS.map(week => {
+            const weekSkills = skills?.filter(s => s.target_week === week.week) || [];
+            return (
+              <Card key={week.week} className="shadow-card">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    Week {week.week}: {week.title}
+                    <Badge variant="secondary" className="font-mono text-xs">
+                      {weekSkills.length}
+                    </Badge>
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground">{week.description}</p>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-2">
+                    {weekSkills.map(skill => {
+                      const level = getLevel(skill.id);
+                      return (
+                        <SkillRow
+                          key={skill.id}
+                          skill={skill}
+                          level={level}
+                          currentWeek={currentWeek}
+                          profileId={profile?.id || ''}
+                          isMentor={isMentor}
+                        />
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </>
+      )}
     </div>
   );
 }
