@@ -46,8 +46,8 @@ export function AppSidebar() {
         <div className="flex flex-col items-start gap-2">
           <img src="/flutternest_logo.png" alt="Flutternest" className="h-6 w-auto" />
           <div className="flex flex-col">
-            <span className="text-sm font-semibold text-sidebar-foreground">Flutternest</span>
-            <span className="text-xs text-muted-foreground capitalize">{profile?.role || 'learner'}</span>
+            <span className="text-sm font-semibold text-sidebar-foreground">Learning Portal</span>
+            <span className="text-xs text-muted-foreground">Logged in as <span className='capitalize font-bold text-gradient'>{profile?.role || 'learner'}</span></span>
           </div>
         </div>
       </SidebarHeader>

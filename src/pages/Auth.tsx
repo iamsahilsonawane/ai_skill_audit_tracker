@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Brain, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Auth() {
@@ -27,11 +27,10 @@ export default function Auth() {
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-md animate-fade-in">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl gradient-primary shadow-glow">
-            <Brain className="h-7 w-7 text-primary-foreground" />
+          <div className="mx-auto mb-2">
+            <img src="/flutternest_logo.png" alt="FlutterNest Logo" className="h-10 object-contain mx-auto" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">Skill Audit Tracker</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Track your AI engineering journey</p>
+          <p className="mt-1 text-md text-muted-foreground font-medium">Learning Portal</p>
         </div>
 
         <Card className="shadow-card border-border/50">

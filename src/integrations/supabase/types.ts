@@ -62,6 +62,7 @@ export type Database = {
           handson_hours: number | null
           hypothesis_exercise: string | null
           id: string
+          notes: string | null
           profile_id: string
           status: string
           theory_hours: number | null
@@ -75,6 +76,7 @@ export type Database = {
           handson_hours?: number | null
           hypothesis_exercise?: string | null
           id?: string
+          notes?: string | null
           profile_id: string
           status?: string
           theory_hours?: number | null
@@ -88,6 +90,7 @@ export type Database = {
           handson_hours?: number | null
           hypothesis_exercise?: string | null
           id?: string
+          notes?: string | null
           profile_id?: string
           status?: string
           theory_hours?: number | null
@@ -446,6 +449,7 @@ export type Database = {
           hours_spent: number | null
           hypothesis_tested: string | null
           id: string
+          notes: string | null
           profile_id: string
           status: string
           updated_at: string
@@ -461,6 +465,7 @@ export type Database = {
           hours_spent?: number | null
           hypothesis_tested?: string | null
           id?: string
+          notes?: string | null
           profile_id: string
           status?: string
           updated_at?: string
@@ -476,6 +481,7 @@ export type Database = {
           hours_spent?: number | null
           hypothesis_tested?: string | null
           id?: string
+          notes?: string | null
           profile_id?: string
           status?: string
           updated_at?: string

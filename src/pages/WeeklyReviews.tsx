@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
+import { RichTextEditor } from '@/components/RichTextEditor';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Trash2, Send, Save, MessageSquare, Star, AlertTriangle, CheckCircle } from 'lucide-react';
 
@@ -90,6 +91,7 @@ function ReviewForm({ review, week, profileId }: { review: any; week: number; pr
     what_blocked: review?.what_blocked || '',
     hypothesis_tested: review?.hypothesis_tested || '',
     business_connection: review?.business_connection || '',
+    notes: review?.notes || '',
     hours_spent: review?.hours_spent || 0,
   });
 
@@ -188,13 +190,24 @@ function ReviewForm({ review, week, profileId }: { review: any; week: number; pr
           <Textarea value={form.hypothesis_tested} onChange={e => updateField('hypothesis_tested', e.target.value)} disabled={isReadOnly} rows={2} />
         </Field>
 
-        <Field label="Business Connection" hint="Which business idea does this connect to?">
-          <Textarea value={form.business_connection} onChange={e => updateField('business_connection', e.target.value)} disabled={isReadOnly} rows={2} />
-        </Field>
+         <Field label="Business Connection" hint="Which business idea does this connect to?">
+           <Textarea value={form.business_connection} onChange={e => updateField('business_connection', e.target.value)} disabled={isReadOnly} rows={2} />
+         </Field>
 
-        <Field label="Hours Spent">
-          <Input type="number" value={form.hours_spent} onChange={e => updateField('hours_spent', Number(e.target.value))} disabled={isReadOnly} />
-        </Field>
+         <Field label="Additional Notes" hint="Any other reflections, learnings, or thoughts about this week.">
+           <div className="mt-1">
+             <RichTextEditor
+               value={form.notes}
+               onChange={(value) => updateField('notes', value)}
+               placeholder="Share your thoughts, challenges overcome, key insights, or anything else you'd like to document about this week..."
+               maxHeight="300px"
+             />
+           </div>
+         </Field>
+
+         <Field label="Hours Spent">
+           <Input type="number" value={form.hours_spent} onChange={e => updateField('hours_spent', Number(e.target.value))} disabled={isReadOnly} />
+         </Field>
 
         {!isReadOnly && (
           <div className="flex gap-3 pt-2">
@@ -258,13 +271,14 @@ function MentorReviewView({ review, week, profileId }: { review: any; week: numb
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {review.what_learned && <ReadField label="What Learned" value={review.what_learned} />}
-        {review.what_built && <ReadField label="What Built" value={review.what_built} />}
-        {review.what_blocked && <ReadField label="Blockers" value={review.what_blocked} />}
-        {review.hypothesis_tested && <ReadField label="Hypothesis" value={review.hypothesis_tested} />}
-        {review.business_connection && <ReadField label="Business Connection" value={review.business_connection} />}
-        <ReadField label="Hours" value={`${review.hours_spent} hours`} />
+       <CardContent className="space-y-4">
+         {review.what_learned && <ReadField label="What Learned" value={review.what_learned} />}
+         {review.what_built && <ReadField label="What Built" value={review.what_built} />}
+         {review.what_blocked && <ReadField label="Blockers" value={review.what_blocked} />}
+         {review.hypothesis_tested && <ReadField label="Hypothesis" value={review.hypothesis_tested} />}
+         {review.business_connection && <ReadField label="Business Connection" value={review.business_connection} />}
+         {review.notes && <ReadNotesField label="Additional Notes" value={review.notes} />}
+         <ReadField label="Hours" value={`${review.hours_spent} hours`} />
 
         {/* Add comment */}
         {profile && <AddCommentForm reviewId={review.id} mentorId={profile.id} />}
@@ -363,6 +377,15 @@ function ReadField({ label, value }: { label: string; value: string }) {
     <div>
       <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{label}</span>
       <p className="text-sm mt-1 whitespace-pre-wrap">{value}</p>
+    </div>
+  );
+}
+
+function ReadNotesField({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{label}</span>
+      <div className="text-sm mt-1 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: value }} />
     </div>
   );
 }
