@@ -106,18 +106,20 @@ export default function Dashboard() {
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold">
-          {isMentor ? (
-            <>
-              Viewing: <span className="text-gradient">{displayName}</span>
-              <Badge variant="secondary" className="ml-3 text-xs align-middle">learner</Badge>
-            </>
-          ) : (
-            <>
-              Welcome back, <span className="text-gradient">{displayName}</span>
-            </>
-          )}
-        </h1>
+        <div className="mb-2">
+          <h1 className="text-2xl font-bold">
+            {isMentor ? (
+              <>
+                Viewing: <span className="text-gradient">{displayName}</span>
+                <Badge variant="secondary" className="ml-3 text-xs align-middle">learner</Badge>
+              </>
+            ) : (
+              <>
+                Welcome back, <span className="text-gradient">{displayName}</span>
+              </>
+            )}
+          </h1>
+        </div>
         {currentWeekPlan && (
           <div className="mt-2 flex items-center gap-3">
             <Badge variant="secondary" className="font-mono text-xs">Week {currentWeek}/10</Badge>

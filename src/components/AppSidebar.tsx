@@ -1,4 +1,4 @@
-import { Brain, LayoutDashboard, Map, FileText, FolderKanban, Calendar, BookOpen, GraduationCap, LogOut, User, Settings2, ChevronDown } from 'lucide-react';
+import { LayoutDashboard, Map, FileText, FolderKanban, Calendar, BookOpen, GraduationCap, LogOut, User, Settings2, ChevronDown } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMentorContext } from '@/contexts/MentorContext';
@@ -43,12 +43,10 @@ export function AppSidebar() {
   return (
     <Sidebar className="border-r border-sidebar-border">
       <SidebarHeader className="p-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl gradient-primary shadow-glow">
-            <Brain className="h-5 w-5 text-primary-foreground" />
-          </div>
+        <div className="flex flex-col items-start gap-2">
+          <img src="/flutternest_logo.png" alt="Flutternest" className="h-6 w-auto" />
           <div className="flex flex-col">
-            <span className="text-sm font-semibold text-sidebar-foreground">Skill Audit</span>
+            <span className="text-sm font-semibold text-sidebar-foreground">Flutternest</span>
             <span className="text-xs text-muted-foreground capitalize">{profile?.role || 'learner'}</span>
           </div>
         </div>

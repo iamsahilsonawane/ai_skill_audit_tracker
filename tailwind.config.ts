@@ -112,10 +112,10 @@ export default {
           from: { opacity: "0", transform: "scale(0.95)" },
           to: { opacity: "1", transform: "scale(1)" },
         },
-        "pulse-glow": {
-          "0%, 100%": { boxShadow: "0 0 12px hsl(38 92% 50% / 0.15)" },
-          "50%": { boxShadow: "0 0 24px hsl(38 92% 50% / 0.3)" },
-        },
+          "pulse-glow": {
+            "0%, 100%": { boxShadow: "0 0 12px hsl(220 81% 53% / 0.15)" },
+            "50%": { boxShadow: "0 0 24px hsl(220 81% 53% / 0.3)" },
+          },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",

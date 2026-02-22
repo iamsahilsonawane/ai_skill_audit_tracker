@@ -37,18 +37,18 @@ export default function Auth() {
         <Card className="shadow-card border-border/50">
           <Tabs defaultValue="signin">
             <CardHeader className="pb-4">
-              <TabsList className="grid w-full grid-cols-1">
+              <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="signin">Sign In</TabsTrigger>
-                {/* <TabsTrigger value="signup">Sign Up</TabsTrigger> */}
+                <TabsTrigger value="signup">Sign Up</TabsTrigger>
               </TabsList>
             </CardHeader>
             <CardContent>
               <TabsContent value="signin" className="mt-0">
                 <SignInForm />
               </TabsContent>
-              {/* <TabsContent value="signup" className="mt-0">
+              <TabsContent value="signup" className="mt-0">
                 <SignUpForm />
-              </TabsContent> */}
+              </TabsContent>
             </CardContent>
           </Tabs>
         </Card>
