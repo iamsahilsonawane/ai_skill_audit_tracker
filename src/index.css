@@ -1,0 +1,191 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@layer base {
+  :root {
+    --background: 220 16% 96%;
+    --foreground: 220 20% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 10%;
+
+    --primary: 38 92% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 90%;
+    --secondary-foreground: 220 20% 10%;
+
+    --muted: 220 14% 92%;
+    --muted-foreground: 220 10% 46%;
+
+    --accent: 38 92% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 87%;
+    --input: 220 13% 87%;
+    --ring: 38 92% 50%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 220 20% 97%;
+    --sidebar-foreground: 220 10% 30%;
+    --sidebar-primary: 38 92% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 38 80% 95%;
+    --sidebar-accent-foreground: 38 80% 30%;
+    --sidebar-border: 220 13% 90%;
+    --sidebar-ring: 38 92% 50%;
+
+    /* Custom tokens */
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
+
+    --skill-not-started: 220 14% 80%;
+    --skill-learning: 38 92% 50%;
+    --skill-confident: 142 71% 45%;
+    --skill-can-teach: 45 93% 47%;
+
+    --mood-struggling: 0 72% 51%;
+    --mood-neutral: 220 14% 70%;
+    --mood-productive: 217 91% 60%;
+    --mood-breakthrough: 45 93% 47%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(38 92% 50%), hsl(32 95% 44%));
+    --gradient-hero: linear-gradient(135deg, hsl(220 20% 10%), hsl(220 25% 18%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(220 16% 98%));
+    --gradient-accent: linear-gradient(135deg, hsl(38 92% 50%), hsl(45 93% 47%));
+
+    --shadow-sm: 0 1px 2px 0 hsl(220 20% 10% / 0.04);
+    --shadow-md: 0 4px 6px -1px hsl(220 20% 10% / 0.06), 0 2px 4px -2px hsl(220 20% 10% / 0.04);
+    --shadow-lg: 0 10px 15px -3px hsl(220 20% 10% / 0.08), 0 4px 6px -4px hsl(220 20% 10% / 0.04);
+    --shadow-glow: 0 0 20px hsl(38 92% 50% / 0.15);
+  }
+
+  .dark {
+    --background: 222 22% 8%;
+    --foreground: 210 20% 94%;
+
+    --card: 222 20% 12%;
+    --card-foreground: 210 20% 94%;
+
+    --popover: 222 20% 12%;
+    --popover-foreground: 210 20% 94%;
+
+    --primary: 38 92% 50%;
+    --primary-foreground: 220 20% 6%;
+
+    --secondary: 222 18% 16%;
+    --secondary-foreground: 210 20% 94%;
+
+    --muted: 222 18% 16%;
+    --muted-foreground: 215 15% 55%;
+
+    --accent: 38 92% 50%;
+    --accent-foreground: 220 20% 6%;
+
+    --destructive: 0 62% 40%;
+    --destructive-foreground: 210 20% 94%;
+
+    --border: 222 18% 18%;
+    --input: 222 18% 18%;
+    --ring: 38 92% 50%;
+
+    --sidebar-background: 222 22% 10%;
+    --sidebar-foreground: 210 15% 70%;
+    --sidebar-primary: 38 92% 50%;
+    --sidebar-primary-foreground: 220 20% 6%;
+    --sidebar-accent: 222 18% 16%;
+    --sidebar-accent-foreground: 210 20% 94%;
+    --sidebar-border: 222 18% 18%;
+    --sidebar-ring: 38 92% 50%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 220 20% 6%;
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
+
+    --skill-not-started: 222 18% 30%;
+    --skill-learning: 38 92% 50%;
+    --skill-confident: 142 71% 45%;
+    --skill-can-teach: 45 93% 47%;
+
+    --mood-struggling: 0 62% 40%;
+    --mood-neutral: 222 18% 40%;
+    --mood-productive: 217 91% 60%;
+    --mood-breakthrough: 45 93% 47%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(38 92% 50%), hsl(32 95% 44%));
+    --gradient-hero: linear-gradient(135deg, hsl(222 22% 8%), hsl(222 25% 14%));
+    --gradient-card: linear-gradient(145deg, hsl(222 20% 12%), hsl(222 20% 14%));
+    --gradient-accent: linear-gradient(135deg, hsl(38 92% 50%), hsl(45 93% 47%));
+
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.2);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.3), 0 2px 4px -2px hsl(0 0% 0% / 0.2);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.4), 0 4px 6px -4px hsl(0 0% 0% / 0.2);
+    --shadow-glow: 0 0 20px hsl(38 92% 50% / 0.2);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer utilities {
+  .shadow-card {
+    box-shadow: var(--shadow-md);
+  }
+  .shadow-card-hover {
+    box-shadow: var(--shadow-lg);
+  }
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+  .gradient-accent {
+    background: var(--gradient-accent);
+  }
+  .text-gradient {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
