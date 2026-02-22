@@ -16,6 +16,9 @@ import { useToast } from '@/hooks/use-toast';
 import { Plus, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameDay } from 'date-fns';
+import { Timer } from '@/components/Timer';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useLearningPlan } from '@/hooks/useProfile';
 
 const moodColors: Record<string, string> = {
   struggling: 'bg-mood-struggling',
@@ -162,9 +165,15 @@ function LogForm({ profileId, date, existing, onDone }: { profileId: string; dat
   const [hours, setHours] = useState(existing?.hours_spent || 0);
   const [summary, setSummary] = useState(existing?.summary || '');
   const [mood, setMood] = useState(existing?.mood || 'neutral');
+  const [week, setWeek] = useState(existing?.week || null);
   const [saving, setSaving] = useState(false);
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { data: plans } = useLearningPlan(profileId);
+
+  const handleTimerUpdate = (timerHours: number) => {
+    setHours(timerHours);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -175,6 +184,7 @@ function LogForm({ profileId, date, existing, onDone }: { profileId: string; dat
       hours_spent: hours,
       summary,
       mood,
+      week,
     };
 
     const { error } = existing
@@ -192,8 +202,29 @@ function LogForm({ profileId, date, existing, onDone }: { profileId: string; dat
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
+        <Label>Week</Label>
+        <Select value={week?.toString() || ''} onValueChange={(value) => setWeek(value ? parseInt(value) : null)}>
+          <SelectTrigger className="mt-1">
+            <SelectValue placeholder="Select week (optional)" />
+          </SelectTrigger>
+          <SelectContent>
+            {plans?.map(plan => (
+              <SelectItem key={plan.week} value={plan.week.toString()}>
+                Week {plan.week}: {plan.title}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div>
+        <Label>Timer</Label>
+        <div className="mt-1">
+          <Timer onTimeUpdate={handleTimerUpdate} initialHours={hours} />
+        </div>
+      </div>
+      <div>
         <Label>Hours Spent</Label>
-        <Input type="number" step="0.5" value={hours} onChange={e => setHours(Number(e.target.value))} className="mt-1" />
+        <Input type="number" step="0.01" value={hours} onChange={e => setHours(Number(e.target.value))} className="mt-1" />
       </div>
       <div>
         <Label>Summary</Label>

@@ -94,6 +94,23 @@ export function useDailyLogs(profileId?: string) {
   });
 }
 
+export function useDailyLogsByWeek(profileId?: string, week?: number) {
+  return useQuery({
+    queryKey: ['daily_logs_week', profileId, week],
+    enabled: !!profileId && !!week,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('daily_logs')
+        .select('*')
+        .eq('profile_id', profileId!)
+        .eq('week', week!)
+        .order('log_date', { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
 export function useProjects(profileId?: string) {
   return useQuery({
     queryKey: ['projects', profileId],

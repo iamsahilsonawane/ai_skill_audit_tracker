@@ -24,6 +24,7 @@ export type Database = {
           profile_id: string
           summary: string | null
           updated_at: string
+          week: number | null
         }
         Insert: {
           created_at?: string
@@ -34,6 +35,7 @@ export type Database = {
           profile_id: string
           summary?: string | null
           updated_at?: string
+          week?: number | null
         }
         Update: {
           created_at?: string
@@ -44,6 +46,7 @@ export type Database = {
           profile_id?: string
           summary?: string | null
           updated_at?: string
+          week?: number | null
         }
         Relationships: [
           {

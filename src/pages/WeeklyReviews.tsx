@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMentorContext } from '@/contexts/MentorContext';
-import { useWeeklyReviews, useLearningPlan, useMentorComments } from '@/hooks/useProfile';
+import { useWeeklyReviews, useLearningPlan, useMentorComments, useDailyLogsByWeek } from '@/hooks/useProfile';
 import { REVIEW_STATUS_LABELS } from '@/lib/supabase-utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -84,6 +84,8 @@ function ReviewForm({ review, week, profileId }: { review: any; week: number; pr
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
+  const { data: weekLogs } = useDailyLogsByWeek(profileId, week);
+  const weekHours = weekLogs?.reduce((s, l) => s + Number(l.hours_spent || 0), 0) || 0;
   const [form, setForm] = useState({
     what_learned: review?.what_learned || '',
     what_built: review?.what_built || '',
@@ -94,6 +96,19 @@ function ReviewForm({ review, week, profileId }: { review: any; week: number; pr
     notes: review?.notes || '',
     hours_spent: review?.hours_spent || 0,
   });
+
+  useEffect(() => {
+    setForm({
+      what_learned: review?.what_learned || '',
+      what_built: review?.what_built || '',
+      build_links: (review?.build_links as any[]) || [],
+      what_blocked: review?.what_blocked || '',
+      hypothesis_tested: review?.hypothesis_tested || '',
+      business_connection: review?.business_connection || '',
+      notes: review?.notes || '',
+      hours_spent: review?.hours_spent || 0,
+    });
+  }, [review]);
 
   const isReadOnly = review?.status === 'submitted' || review?.status === 'reviewed';
 
@@ -205,9 +220,26 @@ function ReviewForm({ review, week, profileId }: { review: any; week: number; pr
            </div>
          </Field>
 
-         <Field label="Hours Spent">
-           <Input type="number" value={form.hours_spent} onChange={e => updateField('hours_spent', Number(e.target.value))} disabled={isReadOnly} />
-         </Field>
+          <Field label="Hours Spent">
+            <div className="space-y-2">
+              <Input type="number" value={form.hours_spent} onChange={e => updateField('hours_spent', Number(e.target.value))} disabled={isReadOnly} />
+              <div className="text-sm text-muted-foreground">
+                Total logged hours this week: <span className="font-semibold">{weekHours.toFixed(2)}h</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    updateField('hours_spent', weekHours);
+                    toast({ title: 'Updated', description: `Set hours to ${weekHours.toFixed(2)} from daily logs` });
+                  }}
+                  className="ml-2 h-6 px-2 text-xs"
+                  disabled={isReadOnly}
+                >
+                  Use Logged Hours
+                </Button>
+              </div>
+            </div>
+          </Field>
 
         {!isReadOnly && (
           <div className="flex gap-3 pt-2">
