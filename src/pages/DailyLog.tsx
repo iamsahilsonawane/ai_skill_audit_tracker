@@ -34,6 +34,14 @@ const moodEmojis: Record<string, string> = {
   breakthrough: '🌟',
 };
 
+const formatHours = (h: number) => {
+  const totalMinutes = Math.round(h * 60);
+  if (totalMinutes < 60) return `${totalMinutes}m`;
+  const hrs = Math.floor(totalMinutes / 60);
+  const mins = totalMinutes % 60;
+  return mins > 0 ? `${hrs}h ${mins}m` : `${hrs}h`;
+};
+
 export default function DailyLog() {
   const { profile } = useAuth();
   const { viewingProfileId } = useMentorContext();
@@ -66,7 +74,7 @@ export default function DailyLog() {
           <h1 className="text-2xl font-bold">Daily Log</h1>
           <p className="text-sm text-muted-foreground mt-1">
             <Clock className="inline h-3.5 w-3.5 mr-1" />
-            {weekHours}h this week
+            {formatHours(weekHours)} this week
           </p>
         </div>
         {!isMentor && (
@@ -145,7 +153,7 @@ export default function DailyLog() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
                     <span className="text-sm font-medium">{format(new Date(log.log_date), 'EEE, MMM d')}</span>
-                    <Badge variant="outline" className="text-xs">{Number(log.hours_spent)}h</Badge>
+                    <Badge variant="outline" className="text-xs">{formatHours(Number(log.hours_spent))}</Badge>
                   </div>
                   <p className="text-xs text-muted-foreground truncate">{log.summary || 'No summary'}</p>
                 </div>
@@ -170,10 +178,6 @@ function LogForm({ profileId, date, existing, onDone }: { profileId: string; dat
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { data: plans } = useLearningPlan(profileId);
-
-  const handleTimerUpdate = (timerHours: number) => {
-    setHours(timerHours);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -219,7 +223,7 @@ function LogForm({ profileId, date, existing, onDone }: { profileId: string; dat
       <div>
         <Label>Timer</Label>
         <div className="mt-1">
-          <Timer onTimeUpdate={handleTimerUpdate} initialHours={hours} />
+          <Timer onStop={(hours) => setHours(hours)} />
         </div>
       </div>
       <div>

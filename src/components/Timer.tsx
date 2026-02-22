@@ -1,71 +1,46 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, Square } from 'lucide-react';
+import { Play, Square } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface TimerProps {
-  onTimeUpdate?: (hours: number) => void;
-  initialHours?: number;
+  onStop: (hours: number) => void;
   className?: string;
 }
 
-export function Timer({ onTimeUpdate, initialHours = 0, className }: TimerProps) {
+export function Timer({ onStop, className }: TimerProps) {
   const [isRunning, setIsRunning] = useState(false);
-  const [elapsedSeconds, setElapsedSeconds] = useState(initialHours * 3600);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const startTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (isRunning) {
       intervalRef.current = setInterval(() => {
-        setElapsedSeconds(prev => {
-          const newSeconds = prev + 1;
-          const hours = newSeconds / 3600;
-          onTimeUpdate?.(Math.round(hours * 100) / 100); // Round to 2 decimal places
-          return newSeconds;
-        });
+        setElapsedSeconds(prev => prev + 1);
       }, 1000);
-    } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
     }
-
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [isRunning, onTimeUpdate]);
-
-  // Update elapsed time when initialHours changes (for existing logs)
-  useEffect(() => {
-    if (!isRunning) {
-      setElapsedSeconds(initialHours * 3600);
-    }
-  }, [initialHours, isRunning]);
+  }, [isRunning]);
 
   const formatTime = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
   const handleStart = () => {
+    setElapsedSeconds(0);
     setIsRunning(true);
-    startTimeRef.current = Date.now() - (elapsedSeconds * 1000);
-  };
-
-  const handlePause = () => {
-    setIsRunning(false);
   };
 
   const handleStop = () => {
     setIsRunning(false);
+    const hours = Math.round((elapsedSeconds / 3600) * 10000) / 10000;
+    onStop(hours);
     setElapsedSeconds(0);
-    onTimeUpdate?.(0);
   };
 
   return (
@@ -75,32 +50,14 @@ export function Timer({ onTimeUpdate, initialHours = 0, className }: TimerProps)
       </div>
       <div className="flex gap-1">
         {!isRunning ? (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleStart}
-            className="h-8 w-8 p-0"
-          >
+          <Button type="button" variant="outline" size="sm" onClick={handleStart} className="h-8 w-8 p-0">
             <Play className="h-4 w-4" />
           </Button>
         ) : (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handlePause}
-            className="h-8 w-8 p-0"
-          >
-            <Pause className="h-4 w-4" />
+          <Button type="button" variant="outline" size="sm" onClick={handleStop} className="h-8 w-8 p-0 text-destructive hover:text-destructive">
+            <Square className="h-4 w-4" />
           </Button>
         )}
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleStop}
-          className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-        >
-          <Square className="h-4 w-4" />
-        </Button>
       </div>
     </div>
   );
