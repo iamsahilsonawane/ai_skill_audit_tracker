@@ -188,3 +188,19 @@ export function useMentorComments(reviewId?: string) {
     },
   });
 }
+
+export function useWeeklyReviewFiles(reviewId?: string) {
+  return useQuery({
+    queryKey: ['weekly_review_files', reviewId],
+    enabled: !!reviewId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('weekly_review_files')
+        .select('*')
+        .eq('review_id', reviewId!)
+        .order('uploaded_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+}

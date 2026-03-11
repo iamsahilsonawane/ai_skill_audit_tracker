@@ -406,93 +406,134 @@ export type Database = {
         }
         Relationships: []
       }
-      week_tasks: {
-        Row: {
-          created_at: string
-          description: string
-          id: string
-          is_completed: boolean | null
-          learning_plan_week_id: string
-          task_type: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          description: string
-          id?: string
-          is_completed?: boolean | null
-          learning_plan_week_id: string
-          task_type?: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          description?: string
-          id?: string
-          is_completed?: boolean | null
-          learning_plan_week_id?: string
-          task_type?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "week_tasks_learning_plan_week_id_fkey"
-            columns: ["learning_plan_week_id"]
-            isOneToOne: false
-            referencedRelation: "learning_plan_weeks"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      weekly_reviews: {
-        Row: {
-          build_links: Json | null
-          business_connection: string | null
-          created_at: string
-          hours_spent: number | null
-          hypothesis_tested: string | null
-          id: string
-          notes: string | null
-          profile_id: string
-          status: string
-          updated_at: string
-          week: number
-          what_blocked: string | null
-          what_built: string | null
-          what_learned: string | null
-        }
-        Insert: {
-          build_links?: Json | null
-          business_connection?: string | null
-          created_at?: string
-          hours_spent?: number | null
-          hypothesis_tested?: string | null
-          id?: string
-          notes?: string | null
-          profile_id: string
-          status?: string
-          updated_at?: string
-          week: number
-          what_blocked?: string | null
-          what_built?: string | null
-          what_learned?: string | null
-        }
-        Update: {
-          build_links?: Json | null
-          business_connection?: string | null
-          created_at?: string
-          hours_spent?: number | null
-          hypothesis_tested?: string | null
-          id?: string
-          notes?: string | null
-          profile_id?: string
-          status?: string
-          updated_at?: string
-          week?: number
-          what_blocked?: string | null
-          what_built?: string | null
-          what_learned?: string | null
-        }
+       week_tasks: {
+         Row: {
+           created_at: string
+           description: string
+           id: string
+           is_completed: boolean | null
+           learning_plan_week_id: string
+           task_type: string
+           updated_at: string
+         }
+         Insert: {
+           created_at?: string
+           description: string
+           id?: string
+           is_completed?: boolean | null
+           learning_plan_week_id: string
+           task_type?: string
+           updated_at?: string
+         }
+         Update: {
+           created_at?: string
+           description?: string
+           id?: string
+           is_completed?: boolean | null
+           learning_plan_week_id?: string
+           task_type?: string
+           updated_at?: string
+         }
+         Relationships: [
+           {
+             foreignKeyName: "week_tasks_learning_plan_week_id_fkey"
+             columns: ["learning_plan_week_id"]
+             isOneToOne: false
+             referencedRelation: "learning_plan_weeks"
+             referencedColumns: ["id"]
+           },
+         ]
+       }
+       weekly_review_files: {
+         Row: {
+           id: string
+           review_id: string
+           file_name: string
+           file_path: string
+           file_size: number | null
+           uploaded_at: string
+           created_at: string
+           updated_at: string
+         }
+         Insert: {
+           id?: string
+           review_id: string
+           file_name: string
+           file_path: string
+           file_size?: number | null
+           uploaded_at?: string
+           created_at?: string
+           updated_at?: string
+         }
+         Update: {
+           id?: string
+           review_id?: string
+           file_name?: string
+           file_path?: string
+           file_size?: number | null
+           uploaded_at?: string
+           created_at?: string
+           updated_at?: string
+         }
+         Relationships: [
+           {
+             foreignKeyName: "weekly_review_files_review_id_fkey"
+             columns: ["review_id"]
+             isOneToOne: false
+             referencedRelation: "weekly_reviews"
+             referencedColumns: ["id"]
+           },
+         ]
+       }
+       weekly_reviews: {
+         Row: {
+           build_links: Json | null
+           business_connection: string | null
+           created_at: string
+           hours_spent: number | null
+           hypothesis_tested: string | null
+           id: string
+           notes: string | null
+           profile_id: string
+           status: string
+           updated_at: string
+           week: number
+           what_blocked: string | null
+           what_built: string | null
+           what_learned: string | null
+         }
+         Insert: {
+           build_links?: Json | null
+           business_connection?: string | null
+           created_at?: string
+           hours_spent?: number | null
+           hypothesis_tested?: string | null
+           id?: string
+           notes?: string | null
+           profile_id: string
+           status?: string
+           updated_at?: string
+           week: number
+           what_blocked?: string | null
+           what_built?: string | null
+           what_learned?: string | null
+         }
+         Update: {
+           build_links?: Json | null
+           business_connection?: string | null
+           created_at?: string
+           hours_spent?: number | null
+           hypothesis_tested?: string | null
+           id?: string
+           notes?: string | null
+           profile_id?: string
+           status?: string
+           updated_at?: string
+           week?: number
+           what_blocked?: string | null
+           what_built?: string | null
+           what_learned?: string | null
+         }
         Relationships: [
           {
             foreignKeyName: "weekly_reviews_profile_id_fkey"

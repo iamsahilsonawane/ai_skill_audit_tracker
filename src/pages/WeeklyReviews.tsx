@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMentorContext } from '@/contexts/MentorContext';
-import { useWeeklyReviews, useLearningPlan, useMentorComments, useDailyLogsByWeek } from '@/hooks/useProfile';
+import { useWeeklyReviews, useLearningPlan, useMentorComments, useDailyLogsByWeek, useWeeklyReviewFiles } from '@/hooks/useProfile';
 import { REVIEW_STATUS_LABELS } from '@/lib/supabase-utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -15,6 +15,8 @@ import { useToast } from '@/hooks/use-toast';
 import { RichTextEditor } from '@/components/RichTextEditor';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Trash2, Send, Save, MessageSquare, Star, AlertTriangle, CheckCircle } from 'lucide-react';
+import { FileUploadDropzone } from '@/components/FileUploadDropzone';
+import { useWeeklyReviewFiles as useFileUpload } from '@/hooks/useWeeklyReviewFiles';
 
 export default function WeeklyReviews() {
   const { profile } = useAuth();
@@ -85,6 +87,8 @@ function ReviewForm({ review, week, profileId }: { review: any; week: number; pr
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
   const { data: weekLogs } = useDailyLogsByWeek(profileId, week);
+  const { data: uploadedFiles } = useWeeklyReviewFiles(review?.id);
+  const { uploadFiles, deleteFile, downloadFile, uploading } = useFileUpload(review?.id);
   const weekHours = weekLogs?.reduce((s, l) => s + Number(l.hours_spent || 0), 0) || 0;
   const [form, setForm] = useState({
     what_learned: review?.what_learned || '',
@@ -241,6 +245,27 @@ function ReviewForm({ review, week, profileId }: { review: any; week: number; pr
             </div>
           </Field>
 
+        {/* Note Files Section */}
+        <Field label="Note Files" hint="Upload markdown files with your notes for this week.">
+          {!review ? (
+            <div className="border-2 border-dashed rounded-lg p-6 text-center text-muted-foreground">
+              <p className="text-sm">Please save your review as a draft first before uploading files.</p>
+            </div>
+          ) : (
+            <FileUploadDropzone
+              files={uploadedFiles || []}
+              onFilesAdded={(files) => uploadFiles(files, profileId)}
+              onFileRemove={(fileId) => {
+                const file = uploadedFiles?.find(f => f.id === fileId);
+                if (file) deleteFile(fileId, file.file_path);
+              }}
+              onFileDownload={(file) => downloadFile(file.file_path, file.file_name)}
+              disabled={isReadOnly || uploading}
+              accept=".md"
+            />
+          )}
+        </Field>
+
         {!isReadOnly && (
           <div className="flex gap-3 pt-2">
             <Button variant="outline" onClick={() => save('draft')} disabled={saving} className="flex-1">
@@ -265,6 +290,8 @@ function MentorReviewView({ review, week, profileId }: { review: any; week: numb
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { profile } = useAuth();
+  const { data: uploadedFiles } = useWeeklyReviewFiles(review?.id);
+  const { downloadFile } = useFileUpload(review?.id);
 
   const markReviewed = async () => {
     if (!review) return;
@@ -311,6 +338,20 @@ function MentorReviewView({ review, week, profileId }: { review: any; week: numb
          {review.business_connection && <ReadField label="Business Connection" value={review.business_connection} />}
          {review.notes && <ReadNotesField label="Additional Notes" value={review.notes} />}
          <ReadField label="Hours" value={`${review.hours_spent} hours`} />
+
+        {/* Note Files Section */}
+        {uploadedFiles && uploadedFiles.length > 0 && (
+          <div className="space-y-2 border-t border-border pt-4">
+            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Note Files</span>
+            <FileUploadDropzone
+              files={uploadedFiles}
+              onFilesAdded={() => {}}
+              onFileRemove={() => {}}
+              onFileDownload={(file) => downloadFile(file.file_path, file.file_name)}
+              disabled={true}
+            />
+          </div>
+        )}
 
         {/* Add comment */}
         {profile && <AddCommentForm reviewId={review.id} mentorId={profile.id} />}
