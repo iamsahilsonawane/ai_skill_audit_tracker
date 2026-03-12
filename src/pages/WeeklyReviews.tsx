@@ -88,7 +88,7 @@ function ReviewForm({ review, week, profileId }: { review: any; week: number; pr
   const [saving, setSaving] = useState(false);
   const { data: weekLogs } = useDailyLogsByWeek(profileId, week);
   const { data: uploadedFiles } = useWeeklyReviewFiles(review?.id);
-  const { uploadFiles, deleteFile, downloadFile, uploading } = useFileUpload(review?.id);
+  const { uploadFiles, deleteFile, downloadFile, previewFile, uploading } = useFileUpload(review?.id);
   const weekHours = weekLogs?.reduce((s, l) => s + Number(l.hours_spent || 0), 0) || 0;
   const [form, setForm] = useState({
     what_learned: review?.what_learned || '',
@@ -260,6 +260,7 @@ function ReviewForm({ review, week, profileId }: { review: any; week: number; pr
                 if (file) deleteFile(fileId, file.file_path);
               }}
               onFileDownload={(file) => downloadFile(file.file_path, file.file_name)}
+              onFilePreview={(file) => previewFile(file.file_path, file.file_name)}
               disabled={isReadOnly || uploading}
               accept=".md"
             />
@@ -291,7 +292,7 @@ function MentorReviewView({ review, week, profileId }: { review: any; week: numb
   const { toast } = useToast();
   const { profile } = useAuth();
   const { data: uploadedFiles } = useWeeklyReviewFiles(review?.id);
-  const { downloadFile } = useFileUpload(review?.id);
+  const { downloadFile, previewFile } = useFileUpload(review?.id);
 
   const markReviewed = async () => {
     if (!review) return;
@@ -348,6 +349,7 @@ function MentorReviewView({ review, week, profileId }: { review: any; week: numb
               onFilesAdded={() => {}}
               onFileRemove={() => {}}
               onFileDownload={(file) => downloadFile(file.file_path, file.file_name)}
+              onFilePreview={(file) => previewFile(file.file_path, file.file_name)}
               disabled={true}
             />
           </div>

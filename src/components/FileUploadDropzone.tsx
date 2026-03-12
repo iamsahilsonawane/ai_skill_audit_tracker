@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
-import { Upload, X, FileText, Download } from 'lucide-react';
+import { Upload, X, FileText, Download, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { MarkdownPreviewDialog } from '@/components/MarkdownPreviewDialog';
 
 interface UploadedFile {
   id: string;
@@ -16,6 +17,7 @@ interface FileUploadDropzoneProps {
   onFilesAdded: (files: File[]) => void;
   onFileRemove: (fileId: string) => void;
   onFileDownload: (file: UploadedFile) => void;
+  onFilePreview: (file: UploadedFile) => Promise<string | null>;
   disabled?: boolean;
   accept?: string;
 }
@@ -25,10 +27,26 @@ export function FileUploadDropzone({
   onFilesAdded,
   onFileRemove,
   onFileDownload,
+  onFilePreview,
   disabled = false,
   accept = '.md',
 }: FileUploadDropzoneProps) {
   const [isDragging, setIsDragging] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewContent, setPreviewContent] = useState<string | null>(null);
+  const [previewFileName, setPreviewFileName] = useState('');
+  const [loadingPreview, setLoadingPreview] = useState(false);
+
+  const handlePreviewClick = async (file: UploadedFile) => {
+    setPreviewFileName(file.file_name);
+    setPreviewOpen(true);
+    setLoadingPreview(true);
+    setPreviewContent(null);
+
+    const content = await onFilePreview(file);
+    setPreviewContent(content);
+    setLoadingPreview(false);
+  };
 
   const handleDragEnter = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -135,7 +153,17 @@ export function FileUploadDropzone({
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8"
+                  onClick={() => handlePreviewClick(file)}
+                  title="Preview file"
+                >
+                  <Eye className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
                   onClick={() => onFileDownload(file)}
+                  title="Download file"
                 >
                   <Download className="h-4 w-4" />
                 </Button>
@@ -145,6 +173,7 @@ export function FileUploadDropzone({
                     size="icon"
                     className="h-8 w-8 text-destructive hover:text-destructive"
                     onClick={() => onFileRemove(file.id)}
+                    title="Delete file"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -154,6 +183,15 @@ export function FileUploadDropzone({
           ))}
         </div>
       )}
+
+      {/* Preview Dialog */}
+      <MarkdownPreviewDialog
+        open={previewOpen}
+        onOpenChange={setPreviewOpen}
+        fileName={previewFileName}
+        content={previewContent}
+        loading={loadingPreview}
+      />
     </div>
   );
 }

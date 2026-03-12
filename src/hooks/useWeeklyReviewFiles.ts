@@ -169,10 +169,39 @@ export function useWeeklyReviewFiles(reviewId?: string) {
     }
   };
 
+  const previewFile = async (filePath: string, fileName: string): Promise<string | null> => {
+    try {
+      const { data, error } = await supabase.storage
+        .from('weekly-review-notes')
+        .download(filePath);
+
+      if (error) {
+        toast({ 
+          title: 'Preview failed', 
+          description: error.message, 
+          variant: 'destructive' 
+        });
+        return null;
+      }
+
+      // Read the blob as text
+      const text = await data.text();
+      return text;
+    } catch (error: any) {
+      toast({ 
+        title: 'Error', 
+        description: error.message, 
+        variant: 'destructive' 
+      });
+      return null;
+    }
+  };
+
   return {
     uploadFiles,
     deleteFile,
     downloadFile,
+    previewFile,
     uploading,
   };
 }
